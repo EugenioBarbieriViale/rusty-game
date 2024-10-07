@@ -1,4 +1,4 @@
-use std::io;
+use std::io::{self, Write};
 
 fn main() {
     let size = 6;
@@ -9,7 +9,9 @@ fn main() {
     loop {
         draw(&pir);
 
-        println!("\nEnter col, start and finish: ");
+        print!("\nEnter col, start and finish: ");
+        io::stdout().flush().unwrap();
+
         let mut coords = String::new();
         io::stdin().read_line(&mut coords).expect("Could not get coordinates :(");
     }
