@@ -1,7 +1,3 @@
-// TODO: 
-// - enum of directions
-// - erase dots
-
 use std::cmp::min;
 use ncurses::*;
 
@@ -34,7 +30,7 @@ fn main() {
     raw();
     noecho();
 
-    let mut pos = (0, 0);
+    let mut pos = (1, 0);
 
     loop {
         draw(&pyr);
@@ -72,6 +68,7 @@ fn erase(pos: (i32, i32), pyr: &mut Pyramid) {
 }
 
 fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
+    let step = 2;
     match key {
         'k' => {
             if pos.1 > 0 {
@@ -81,19 +78,21 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
         },
 
         'j' => {
-            pos.1 = min(pos.1 + 1, pyr.size as i32 - 1);
+            if pos.0 < 2 * pyr.core[pos.1 as usize].len() as i32 - 1 {
+                pos.1 = min(pos.1 + 1, pyr.size as i32 - 1);
+            }
             pos
         },
 
         'h' => {
-            if pos.0 > 0 {
-                pos.0 -= 1;
+            if pos.0 > 1 {
+                pos.0 -= step;
             }
             pos
         },
 
         'l' => {
-            pos.0 = min(pos.0 + 1, (pyr.core[pos.1 as usize].len() - 1).try_into().unwrap());
+            pos.0 = min(pos.0 + step, 2 * pyr.core[pos.1 as usize].len() as i32 - 1);
             pos
         },
         
@@ -104,7 +103,7 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
 fn draw(pyr: &Pyramid) {
     for layer in pyr.core.iter() {
         for _dot in layer.iter() {
-            let dot_str = format!("{}", pyr.dot);
+            let dot_str = format!(" {}", pyr.dot);
             addstr(&dot_str as &str).unwrap();
         }
         addstr("\n").unwrap();
