@@ -3,8 +3,5 @@ name = "rusty-game"
 version = "0.1.0"
 edition = "2021"
 
-[[example]]
-name = "learn"
-
 [dependencies]
 ncurses = "6.0.1"
