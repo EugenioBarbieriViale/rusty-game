@@ -21,6 +21,30 @@ impl Pyramid {
             core: vec,
         }
     }
+
+    // Possible better way of doing this?
+    fn erase(&mut self, pos: (i32, i32)) {
+        let yi = pos.1 as usize;
+        let xi = (pos.0 / 2) as usize;
+
+        if self.core[yi][xi] == 'o' {
+            self.core[yi][xi] = '-';
+        }
+
+        else {
+            self.core[yi][xi] = 'o';
+        }
+    }
+
+    fn draw(&self) {
+        for layer in self.core.iter() {
+            for dot in layer.iter() {
+                let dot_str = format!(" {}", dot);
+                addstr(&dot_str as &str).unwrap();
+            }
+            addstr("\n").unwrap();
+        }
+    }
 }
 
 fn main() {
@@ -33,14 +57,14 @@ fn main() {
     let mut pos = (1, 0);
 
     loop {
-        draw(&pyr);
+        pyr.draw();
 
         mv(pos.1, pos.0);
 
         let key = getch() as u8 as char;
         match key {
             'q' => break,
-            'c' => erase(pos, &mut pyr),
+            'c' => pyr.erase(pos),
             _ => (),
         }
 
@@ -48,23 +72,9 @@ fn main() {
 
         refresh();
         clear();
-
-        // let coords = format!("{}, {}", cur_x, cur_y);
-        // addstr(&coords as &str).unwrap();
     }
 
     endwin();
-
-    // for (i, layer) in pyr.core.iter().enumerate() {
-    //     for (j, dot) in layer.iter().enumerate() {
-    //         print!("({j}, {i})");
-    //     }
-    //     println!("\n");
-    // }
-}
-
-fn erase(pos: (i32, i32), pyr: &mut Pyramid) {
-    pyr.core[pos.1 as usize][pos.0 as usize] = '-';
 }
 
 fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
@@ -97,15 +107,5 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
         },
         
         _ => pos
-    }
-}
-
-fn draw(pyr: &Pyramid) {
-    for layer in pyr.core.iter() {
-        for _dot in layer.iter() {
-            let dot_str = format!(" {}", pyr.dot);
-            addstr(&dot_str as &str).unwrap();
-        }
-        addstr("\n").unwrap();
     }
 }
