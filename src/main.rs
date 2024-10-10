@@ -22,13 +22,12 @@ impl Pyramid {
         }
     }
 
-    // Possible better way of doing this?
-    fn erase(&mut self, pos: (i32, i32)) {
+    fn erase(&mut self, pos: (i32, i32), erase_char: char) {
         let yi = pos.1 as usize;
         let xi = (pos.0 / 2) as usize;
 
         if self.core[yi][xi] == 'o' {
-            self.core[yi][xi] = '-';
+            self.core[yi][xi] = erase_char;
         }
 
         else {
@@ -54,6 +53,7 @@ fn main() {
     raw();
     noecho();
 
+    let mut turn = 0;
     let mut pos = (1, 0);
 
     loop {
@@ -64,7 +64,14 @@ fn main() {
         let key = getch() as u8 as char;
         match key {
             'q' => break,
-            'c' => pyr.erase(pos),
+            'c' => {
+                match turn % 2 {
+                    0 => pyr.erase(pos, '-'),
+                    1 => pyr.erase(pos, '*'),
+                    _ => (),
+                }
+                turn += 1;
+            },
             _ => (),
         }
 
