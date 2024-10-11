@@ -12,9 +12,16 @@ fn main() {
     noecho();
 
     let mut turn = 0;
+    let mut erased_dots = 0;
+    let mut collision = false;
+
     let mut pos = (1, 0);
 
     loop {
+        if erased_dots == 21 || collision {
+            break;
+        }
+
         pyr.draw();
 
         mv(pos.1, pos.0);
@@ -22,14 +29,24 @@ fn main() {
         let key = getch() as u8 as char;
         match key {
             'q' => break,
-            x if x.is_numeric() => {
+
+            c if c.is_numeric() => {
+                let c = c.to_digit(10).unwrap();
+
                 match turn % 2 {
-                    0 => pyr.erase(pos, x.to_digit(10).unwrap(), '-'),
-                    1 => pyr.erase(pos, x.to_digit(10).unwrap(), '*'),
+                    0 => {
+                        collision = pyr.erase(pos, c, '-');
+                        erased_dots += c;
+                    },
+                    1 => {
+                        collision = pyr.erase(pos, c, '*');
+                        erased_dots += c;
+                    },
                     _ => (),
                 }
                 turn += 1;
             }
+
             _ => (),
         }
 
@@ -40,6 +57,17 @@ fn main() {
     }
 
     endwin();
+
+    if collision {
+        println!("Erasing already erased dots is not admitted!");
+    }
+    else {
+        match turn % 2 {
+            0 => println!("You won!"),
+            1 => println!("Machine won!"),
+            _ => (),
+        }
+    }
 }
 
 fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {

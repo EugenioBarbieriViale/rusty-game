@@ -21,7 +21,7 @@ impl Pyramid {
         }
     }
 
-    pub fn erase(&mut self, pos: (i32, i32), n_dots: u32, erase_char: char) {
+    pub fn erase(&mut self, pos: (i32, i32), n_dots: u32, erase_char: char) -> bool {
         let yi = pos.1 as usize;
         let x = (pos.0 / 2) as usize;
 
@@ -29,11 +29,16 @@ impl Pyramid {
             for xi in x..(x + n_dots as usize) {
                 if self.core[yi][xi] == self.dot {
                     self.core[yi][xi] = erase_char;
-                } else {
+                } 
+                else if self.core[yi][xi] == erase_char {
                     self.core[yi][xi] = self.dot;
+                }
+                else {
+                    return true
                 }
             }
         }
+        false
     }
 
     pub fn draw(&self) {
