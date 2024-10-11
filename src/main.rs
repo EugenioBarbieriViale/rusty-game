@@ -1,52 +1,8 @@
 use ncurses::*;
 use std::cmp::min;
 
-struct Pyramid {
-    size: u8,
-    dot: char,
-    core: Vec<Vec<char>>,
-}
-
-impl Pyramid {
-    fn create_with(size: u8, dot: char) -> Self {
-        let mut vec = Vec::new();
-        for i in (1..=size).rev() {
-            let layer = vec![dot; i as usize];
-            vec.push(layer);
-        }
-
-        Self {
-            size,
-            dot,
-            core: vec,
-        }
-    }
-
-    fn erase(&mut self, pos: (i32, i32), n_dots: u32, erase_char: char) {
-        let yi = pos.1 as usize;
-        let x = (pos.0 / 2) as usize;
-
-        if self.core[yi].len() - x >= n_dots as usize {
-            for xi in x..(x + n_dots as usize) {
-                if self.core[yi][xi] == self.dot {
-                    self.core[yi][xi] = erase_char;
-                } else {
-                    self.core[yi][xi] = self.dot;
-                }
-            }
-        }
-    }
-
-    fn draw(&self) {
-        for layer in self.core.iter() {
-            for dot in layer.iter() {
-                let dot_str = format!(" {}", dot);
-                addstr(&dot_str as &str).unwrap();
-            }
-            addstr("\n").unwrap();
-        }
-    }
-}
+mod pyramid;
+use pyramid::*;
 
 fn main() {
     let mut pyr = Pyramid::create_with(6, 'o');
