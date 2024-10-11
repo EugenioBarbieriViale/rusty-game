@@ -5,6 +5,7 @@
 - DOWN: 'j'
 - RIGHT: 'l'
 - LEFT: 'h'
+
 It uses vim keys.
 
 ## Quit
