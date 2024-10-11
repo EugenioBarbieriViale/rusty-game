@@ -1,5 +1,5 @@
-use std::cmp::min;
 use ncurses::*;
+use std::cmp::min;
 
 struct Pyramid {
     size: u8,
@@ -22,16 +22,18 @@ impl Pyramid {
         }
     }
 
-    fn erase(&mut self, pos: (i32, i32), erase_char: char) {
+    fn erase(&mut self, pos: (i32, i32), n_dots: u32, erase_char: char) {
         let yi = pos.1 as usize;
-        let xi = (pos.0 / 2) as usize;
+        let x = (pos.0 / 2) as usize;
 
-        if self.core[yi][xi] == 'o' {
-            self.core[yi][xi] = erase_char;
-        }
-
-        else {
-            self.core[yi][xi] = 'o';
+        if self.core[yi].len() - x >= n_dots as usize {
+            for xi in x..(x + n_dots as usize) {
+                if self.core[yi][xi] == self.dot {
+                    self.core[yi][xi] = erase_char;
+                } else {
+                    self.core[yi][xi] = self.dot;
+                }
+            }
         }
     }
 
@@ -64,14 +66,14 @@ fn main() {
         let key = getch() as u8 as char;
         match key {
             'q' => break,
-            'c' => {
+            x if x.is_numeric() => {
                 match turn % 2 {
-                    0 => pyr.erase(pos, '-'),
-                    1 => pyr.erase(pos, '*'),
+                    0 => pyr.erase(pos, x.to_digit(10).unwrap(), '-'),
+                    1 => pyr.erase(pos, x.to_digit(10).unwrap(), '*'),
                     _ => (),
                 }
                 turn += 1;
-            },
+            }
             _ => (),
         }
 
@@ -92,27 +94,27 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
                 pos.1 -= 1;
             }
             pos
-        },
+        }
 
         'j' => {
             if pos.0 < 2 * pyr.core[pos.1 as usize].len() as i32 - 1 {
                 pos.1 = min(pos.1 + 1, pyr.size as i32 - 1);
             }
             pos
-        },
+        }
 
         'h' => {
             if pos.0 > 1 {
                 pos.0 -= step;
             }
             pos
-        },
+        }
 
         'l' => {
             pos.0 = min(pos.0 + step, 2 * pyr.core[pos.1 as usize].len() as i32 - 1);
             pos
-        },
-        
-        _ => pos
+        }
+
+        _ => pos,
     }
 }
