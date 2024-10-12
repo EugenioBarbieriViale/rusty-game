@@ -32,24 +32,23 @@ fn main() {
         match key {
             'q' => break,
 
-            c if c.is_numeric() => {
-                let c = c.to_digit(10).unwrap();
+            n if n.is_numeric() => {
+                let n = n.to_digit(10).unwrap();
 
-                match turn % 2 {
-                    0 => {
-                        collision = pyr.erase(pos, c, '-');
-                        erased_dots += c;
-                    }
-                    1 => {
-                        collision = opponent::erase(&mut pyr, pos, c, '*');
-                        erased_dots += c;
-                    }
-                    _ => (),
+                if turn % 2 == 0 {
+                    collision = pyr.erase(pos, n, '-');
+                    erased_dots += n;
                 }
                 turn += 1;
             }
 
             _ => (),
+        }
+
+        if turn % 2 == 1 {
+            collision = opponent::erase(&mut pyr, '*');
+            turn += 1;
+            // return erased dots and add to collision var
         }
 
         pos = move_curs(key, pos, &pyr);
