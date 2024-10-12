@@ -21,19 +21,21 @@ impl Pyramid {
         }
     }
 
-    pub fn erase(&mut self, pos: (i32, i32), n_dots: u32, erase_char: char) -> bool {
+    pub fn erase(&mut self, pos: (i32, i32), mut n_dots: u32, erase_char: char) -> bool {
         let yi = pos.1 as usize;
         let x = (pos.0 / 2) as usize;
 
-        if self.core[yi].len() - x >= n_dots as usize {
-            for xi in x..(x + n_dots as usize) {
-                if self.core[yi][xi] == self.dot {
-                    self.core[yi][xi] = erase_char;
-                } else if self.core[yi][xi] == erase_char {
-                    self.core[yi][xi] = self.dot;
-                } else {
-                    return true;
-                }
+        if self.core[yi].len() - x < n_dots as usize {
+            n_dots = (self.core[yi].len() - x) as u32;
+        }
+
+        for xi in x..(x + n_dots as usize) {
+            if self.core[yi][xi] == self.dot {
+                self.core[yi][xi] = erase_char;
+            } else if self.core[yi][xi] == erase_char {
+                self.core[yi][xi] = self.dot;
+            } else {
+                return true;
             }
         }
         false
