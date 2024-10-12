@@ -32,9 +32,8 @@ impl Pyramid {
         for xi in x..(x + n_dots as usize) {
             if self.core[yi][xi] == self.dot {
                 self.core[yi][xi] = erase_char;
-            } else if self.core[yi][xi] == erase_char {
-                self.core[yi][xi] = self.dot;
-            } else {
+            } 
+            else {
                 return true;
             }
         }
