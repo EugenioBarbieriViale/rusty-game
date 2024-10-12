@@ -56,18 +56,9 @@ fn main() {
         refresh();
         clear();
     }
-
     endwin();
 
-    if collision {
-        println!("Erasing already erased dots is not admitted!");
-    } else {
-        match turn % 2 {
-            0 => println!("You won!"),
-            1 => println!("Machine won!"),
-            _ => (),
-        }
-    }
+    close_game(collision, turn);
 }
 
 fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
@@ -100,5 +91,21 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
         }
 
         _ => pos,
+    }
+}
+
+fn close_game(collision: bool, turn: usize) {
+    if collision {
+        match turn % 2 {
+            0 => println!("Erasing already erased dots is not admitted! (machine fault)"),
+            1 => println!("Erasing already erased dots is not admitted! (your fault)"),
+            _ => (),
+        }
+    } else {
+        match turn % 2 {
+            0 => println!("You won!"),
+            1 => println!("Machine won!"),
+            _ => (),
+        }
     }
 }

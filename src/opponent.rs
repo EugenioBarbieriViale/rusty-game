@@ -14,8 +14,7 @@ impl RandValues {
     fn new(pyr: &Pyramid) -> Self {
         let rand_y = rand(pyr.size as usize);
         let rand_x = rand(pyr.core[rand_y].len());
-        // let rand_dots = rand((pyr.core[rand_y].len() - rand_x).try_into().unwrap());
-        let rand_dots = 1;
+        let rand_dots = rand(pyr.core[rand_y].len() - rand_x) + 1;
 
         Self {
             pos: (rand_x as i32, rand_y as i32),
