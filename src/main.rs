@@ -2,7 +2,9 @@ use ncurses::*;
 use std::cmp::min;
 
 mod pyramid;
-use pyramid::*;
+mod opponent;
+
+use crate::pyramid::Pyramid;
 
 fn main() {
     let mut pyr = Pyramid::create_with(6, 'o');
@@ -37,11 +39,11 @@ fn main() {
                     0 => {
                         collision = pyr.erase(pos, c, '-');
                         erased_dots += c;
-                    },
+                    }
                     1 => {
-                        collision = pyr.erase(pos, c, '*');
+                        collision = opponent::erase(&mut pyr, pos, c, '*');
                         erased_dots += c;
-                    },
+                    }
                     _ => (),
                 }
                 turn += 1;
@@ -60,8 +62,7 @@ fn main() {
 
     if collision {
         println!("Erasing already erased dots is not admitted!");
-    }
-    else {
+    } else {
         match turn % 2 {
             0 => println!("You won!"),
             1 => println!("Machine won!"),
