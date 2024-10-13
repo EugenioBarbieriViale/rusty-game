@@ -49,4 +49,12 @@ impl Pyramid {
             addstr("\n").unwrap();
         }
     }
+
+    pub fn reset(&mut self) {
+        for i in 0..(self.size as usize) {
+            for j in 0..(self.core[i].len() as usize) {
+                self.core[i][j] = self.dot;
+            }
+        }
+    }
 }

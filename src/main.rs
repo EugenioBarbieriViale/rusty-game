@@ -20,11 +20,14 @@ fn main() {
     let mut pos = (1, 0);
 
     loop {
-        if erased_dots == 21 || collision {
-            break;
-        }
-
         pyr.draw();
+
+        if erased_dots == 21 || collision {
+            mv(pyr.size as i32 + 1, 1);
+            score_board(collision, turn);
+
+            pyr.reset();
+        }
 
         mv(pos.1, pos.0);
 
@@ -57,8 +60,6 @@ fn main() {
         clear();
     }
     endwin();
-
-    close_game(collision, turn);
 }
 
 fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
@@ -94,17 +95,17 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
     }
 }
 
-fn close_game(collision: bool, turn: usize) {
+fn score_board(collision: bool, turn: usize) {
     if collision {
         match turn % 2 {
-            0 => println!("Erasing already erased dots is not admitted! (machine fault)"),
-            1 => println!("Erasing already erased dots is not admitted! (your fault)"),
+            0 => {addstr("Erasing already erased dots is not admitted! (machine fault)").unwrap();},
+            1 => {addstr("Erasing already erased dots is not admitted! (your fault)").unwrap();},
             _ => (),
         }
     } else {
         match turn % 2 {
-            0 => println!("You won!"),
-            1 => println!("Machine won!"),
+            0 => {addstr("You won!").unwrap();},
+            1 => {addstr("Machine won!").unwrap();},
             _ => (),
         }
     }
