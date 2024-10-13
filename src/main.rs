@@ -7,7 +7,7 @@ mod opponent;
 use crate::pyramid::Pyramid;
 
 fn main() {
-    let mut pyr = Pyramid::create_with(6, 'o');
+    let mut pyr = Pyramid::create_with(6, 'o', '.');
 
     initscr();
     raw();
@@ -15,16 +15,18 @@ fn main() {
 
     let mut turn = 0;
     let mut erased_dots = 0;
-    let mut collision = false;
+
+    let mut coll_human = false;
+    let mut coll_opp = false;
 
     let mut pos = (1, 0);
 
     loop {
         pyr.draw();
 
-        if erased_dots == 21 || collision {
+        if erased_dots == 21 || coll_human || coll_opp {
             mv(pyr.size as i32 + 1, 1);
-            score_board(collision, turn);
+            score_board(coll_human, coll_opp, turn);
 
             pyr.reset();
         }
@@ -39,7 +41,7 @@ fn main() {
                 let n = n.to_digit(10).unwrap();
 
                 if turn % 2 == 0 {
-                    collision = pyr.erase(pos, n, '-');
+                    coll_human = pyr.erase(pos, n);
                     erased_dots += n;
                 }
                 turn += 1;
@@ -49,7 +51,7 @@ fn main() {
         }
 
         if turn % 2 == 1 {
-            collision = opponent::erase(&mut pyr, '*');
+            coll_opp = opponent::erase(&mut pyr);
             turn += 1;
             // return erased dots and add to collision var
         }
@@ -95,17 +97,17 @@ fn move_curs(key: char, mut pos: (i32, i32), pyr: &Pyramid) -> (i32, i32) {
     }
 }
 
-fn score_board(collision: bool, turn: usize) {
-    if collision {
-        match turn % 2 {
-            0 => {addstr("Erasing already erased dots is not admitted! (machine fault)").unwrap();},
-            1 => {addstr("Erasing already erased dots is not admitted! (your fault)").unwrap();},
-            _ => (),
-        }
-    } else {
+fn score_board(coll_human: bool, coll_opp: bool, turn: usize) {
+    if coll_human {
+        addstr("Erasing already erased dots is not admitted! (your fault)").unwrap();
+    }
+    else if coll_opp {
+        addstr("Erasing already erased dots is not admitted! (opponent's fault)").unwrap();
+    }
+    else {
         match turn % 2 {
             0 => {addstr("You won!").unwrap();},
-            1 => {addstr("Machine won!").unwrap();},
+            1 => {addstr("Opponent won!").unwrap();},
             _ => (),
         }
     }

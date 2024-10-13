@@ -23,7 +23,7 @@ impl RandValues {
     }
 }
 
-pub fn erase(pyr: &mut Pyramid, erase_char: char) -> bool {
+pub fn erase(pyr: &mut Pyramid) -> bool {
     let rand_vals = RandValues::new(&pyr);
-    pyr.erase(rand_vals.pos, rand_vals.n_dots, erase_char)
+    pyr.erase(rand_vals.pos, rand_vals.n_dots)
 }
